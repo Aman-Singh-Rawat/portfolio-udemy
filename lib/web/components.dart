@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:logger/web.dart';
 
 class TabsWeb extends StatefulWidget {
   const TabsWeb({required this.title, super.key, this.route});
@@ -143,13 +145,18 @@ class TextForm extends StatelessWidget {
     required this.text,
     required this.containerWidth,
     required this.hintText,
+    this.validator,
+    this.controller,
     this.maxLine,
+
     super.key,
   });
 
   final String text;
   final double containerWidth;
   final int? maxLine;
+  final controller;
+  final validator;
   final String hintText;
 
   @override
@@ -162,8 +169,14 @@ class TextForm extends StatelessWidget {
         SizedBox(
           width: containerWidth,
           child: TextFormField(
+            validator: validator,
             maxLines: maxLine,
+            controller: controller,
             decoration: InputDecoration(
+              errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.red),
+                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+              ),
               focusedErrorBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.red),
                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
@@ -266,4 +279,43 @@ class _AnimatedCardState extends State<AnimatedCard>
       ),
     );
   }
+}
+
+class AddDataFirestore {
+  CollectionReference reference = FirebaseFirestore.instance.collection(
+    'messages',
+  );
+  final logger = Logger();
+
+  Future<void> addResponse(
+    final firstName,
+    final lastName,
+    final email,
+    final phoneNumber,
+    final message,
+  ) {
+    return reference
+        .add({
+          'first name': firstName,
+          'last name': lastName,
+          'email': email,
+          'phone number': phoneNumber,
+          'message': message,
+        })
+        .then((value) => logger.d("Success"))
+        .catchError((error) => logger.d("error"));
+  }
+}
+
+Future dialogError(BuildContext context) {
+  return showDialog(
+    context: context,
+    builder:
+        (context) => AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          title: SansBold(text: 'Message Submitted', size: 20.0),
+        ),
+  );
 }

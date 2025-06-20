@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "591066052512",
+    "project_id": "aman-singh-ff244",
+    "storage_bucket": "aman-singh-ff244.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:591066052512:android:a853caf2514b26d40a96c5",
+        "android_client_info": {
+          "package_name": "aman.com.aman_singh"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAhexTFGOFRdQ59nujODHGc4-skSHcpZo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

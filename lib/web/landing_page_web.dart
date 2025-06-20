@@ -1,6 +1,7 @@
 import 'package:aman_singh/web/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:logger/logger.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LandingPageWeb extends StatefulWidget {
@@ -11,23 +12,31 @@ class LandingPageWeb extends StatefulWidget {
 }
 
 class _LandingPageWebState extends State<LandingPageWeb> {
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _emailNameController = TextEditingController();
+  final TextEditingController _phoneNameController = TextEditingController();
+  final TextEditingController _messageController = TextEditingController();
+  final Logger logger = Logger();
+  final formKey = GlobalKey<FormState>();
+
+  urlLauncher(String imageUrl, String imagePath) {
+    return IconButton(
+      onPressed: () async {
+        await launchUrl(Uri.parse(imageUrl));
+      },
+      icon: SvgPicture.asset(
+        imagePath,
+        width: 35,
+        colorFilter: ColorFilter.mode(Colors.black, BlendMode.srcIn),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var heightDevice = MediaQuery.sizeOf(context).height;
     var widthDevice = MediaQuery.sizeOf(context).width;
-
-    urlLauncher(String imageUrl, String imagePath) {
-      return IconButton(
-        onPressed: () async {
-          await launchUrl(Uri.parse(imageUrl));
-        },
-        icon: SvgPicture.asset(
-          imagePath,
-          width: 35,
-          colorFilter: ColorFilter.mode(Colors.black, BlendMode.srcIn),
-        ),
-      );
-    }
 
     return Scaffold(
       drawer: Drawer(
@@ -289,95 +298,134 @@ class _LandingPageWebState extends State<LandingPageWeb> {
           //Third Section
           SizedBox(
             height: heightDevice / 1.3,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                SansBold(text: 'What I do?', size: 40),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    AnimatedCard(
-                      imagePath: 'assets/images/webL.png',
-                      text: 'Web development',
-                      fit: BoxFit.contain,
-                      reverse: true,
-                    ),
-                    AnimatedCard(
-                      imagePath: 'assets/images/app.png',
-                      text: 'App development',
-                      fit: BoxFit.contain,
-                      reverse: true,
-                    ),
-                    AnimatedCard(
-                      imagePath: 'assets/images/firebase.png',
-                      text: 'Back-end development',
-                    ),
-                  ],
-                ),
-              ],
+            child: Form(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SansBold(text: 'What I do?', size: 40),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      AnimatedCard(
+                        imagePath: 'assets/images/webL.png',
+                        text: 'Web development',
+                        fit: BoxFit.contain,
+                        reverse: true,
+                      ),
+                      AnimatedCard(
+                        imagePath: 'assets/images/app.png',
+                        text: 'App development',
+                        fit: BoxFit.contain,
+                        reverse: true,
+                      ),
+                      AnimatedCard(
+                        imagePath: 'assets/images/firebase.png',
+                        text: 'Back-end development',
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
 
           //Forth section
           SizedBox(
             height: heightDevice,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                SansBold(text: 'Contact me', size: 40),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Column(
-                      children: [
-                        TextForm(
-                          containerWidth: 350,
-                          text: 'First Name',
-                          hintText: 'Please type your first name',
-                        ),
-                        SizedBox(height: 15),
-                        TextForm(
-                          text: 'Email',
-                          containerWidth: 350,
-                          hintText: 'Please type your email address',
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        TextForm(
-                          containerWidth: 350,
-                          text: 'Last Name',
-                          hintText: 'Please type your last name',
-                        ),
-                        SizedBox(height: 15),
-                        TextForm(
-                          text: 'Phone number',
-                          containerWidth: 350,
-                          hintText: 'Please type your phone number',
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                TextForm(
-                  text: 'Message',
-                  containerWidth: widthDevice / 1.5,
-                  hintText: 'Please type your message',
-                  maxLine: 10,
-                ),
-                MaterialButton(
-                  onPressed: () {},
-                  elevation: 20.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SansBold(text: 'Contact me', size: 40),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Column(
+                        children: [
+                          TextForm(
+                            containerWidth: 350,
+                            text: 'First Name',
+                            controller: _firstNameController,
+                            validator: (text) {
+                              if (text.toString().trim().isEmpty) {
+                                return 'First name is required';
+                              }
+                            },
+                            hintText: 'Please type your first name',
+                          ),
+                          SizedBox(height: 15),
+                          TextForm(
+                            text: 'Email',
+                            containerWidth: 350,
+                            validator: (text) {
+                              if (text.toString().trim().isEmpty) {
+                                return 'Email is required';
+                              }
+                            },
+                            hintText: 'Please type your email address',
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          TextForm(
+                            containerWidth: 350,
+                            text: 'Last Name',
+                            controller: _lastNameController,
+                            hintText: 'Please type your last name',
+                          ),
+                          SizedBox(height: 15),
+                          TextForm(
+                            text: 'Phone number',
+                            containerWidth: 350,
+                            controller: _phoneNameController,
+                            hintText: 'Please type your phone number',
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  height: 60.0,
-                  minWidth: 200.0,
-                  color: Colors.tealAccent,
-                  child: SansBold(text: 'Submit', size: 20.0),
-                ),
-              ],
+                  TextForm(
+                    text: 'Message',
+                    controller: _messageController,
+                    containerWidth: widthDevice / 1.5,
+                    hintText: 'Please type your message',
+                    validator: (text) {
+                      if (text.toString().trim().isEmpty) {
+                        return 'Message is required';
+                      }
+                    },
+                    maxLine: 10,
+                  ),
+                  MaterialButton(
+                    onPressed: () async {
+                      logger.d(_firstNameController.text.toString());
+                      final addData = new AddDataFirestore();
+
+                      if (formKey.currentState!.validate()) {
+                        await addData.addResponse(
+                          _firstNameController.text,
+                          _lastNameController.text,
+                          _emailNameController.text,
+                          _phoneNameController.text,
+                          _messageController.text,
+                        );
+                        formKey.currentState!.reset();
+                        dialogError(context);
+                      }
+                    },
+                    elevation: 20.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    height: 60.0,
+                    minWidth: 200.0,
+                    color: Colors.tealAccent,
+                    child: SansBold(text: 'Submit', size: 20.0),
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 20.0),
