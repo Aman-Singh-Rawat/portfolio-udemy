@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../web/components.dart';
+import '../components.dart';
 
 class AboutMobile extends StatefulWidget {
   const AboutMobile({super.key});
@@ -13,68 +13,11 @@ class AboutMobile extends StatefulWidget {
 }
 
 class _AboutMobileState extends State<AboutMobile> {
-  tealContainer(String text) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.tealAccent, style: BorderStyle.solid),
-        borderRadius: BorderRadius.circular(5.0),
-      ),
-      padding: const EdgeInsets.all(7.0),
-      child: Text(text, style: GoogleFonts.openSans(fontSize: 15.0)),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        endDrawer: Drawer(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              DrawerHeader(
-                padding: const EdgeInsets.only(bottom: 20.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(width: 2.0, color: Colors.black),
-                  ),
-                  child: Image.asset(
-                    'assets/images/image-circle.png',
-                    filterQuality: FilterQuality.high,
-                  ),
-                ),
-              ),
-              TabsMobile(text: 'Home', route: '/'),
-              SizedBox(height: 20.0),
-              TabsMobile(text: 'Works', route: '/works'),
-              const SizedBox(height: 20.0),
-              TabsMobile(text: 'Blog', route: '/blog'),
-              const SizedBox(height: 20.0),
-              TabsMobile(text: 'About', route: '/about'),
-              const SizedBox(height: 20.0),
-              TabsMobile(text: 'Contact', route: '/contact'),
-              const SizedBox(height: 40.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _getSocialMediaButton(
-                    'https://www.instagram.com/tomcruise',
-                    'assets/images/instagram.svg',
-                  ),
-                  _getSocialMediaButton(
-                    'https://www.twitter.com/tomcruise',
-                    'assets/images/twitter.svg',
-                  ),
-                  _getSocialMediaButton(
-                    'https://github.com/Aman-Singh-Rawat',
-                    'assets/images/github.svg',
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
+        endDrawer: DrawersMobile(),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
           child: ListView(
@@ -193,13 +136,6 @@ class _AboutMobileState extends State<AboutMobile> {
           ),
         ),
       ),
-    );
-  }
-
-  IconButton _getSocialMediaButton(String imageUrl, String imagePath) {
-    return IconButton(
-      onPressed: () async => await launchUrl(Uri.parse(imageUrl)),
-      icon: SvgPicture.asset(imagePath, color: Colors.black, width: 35.0),
     );
   }
 }

@@ -1,95 +1,31 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-import '../web/components.dart';
+import '../components.dart';
 
-class BlogMobile extends StatefulWidget {
-  const BlogMobile({super.key});
+class Blog extends StatefulWidget {
+  const Blog({super.key});
 
   @override
-  State<BlogMobile> createState() => _BlogMobileState();
+  State<Blog> createState() => _BlogState();
 }
 
-class _BlogMobileState extends State<BlogMobile> {
-  void article() async {
-    await FirebaseFirestore.instance.collection('articles').get().then((
-      querySnapshot,
-    ) {
-      querySnapshot.docs.forEach((element) {});
-    });
-  }
-
-  void streamArticle() async {}
-
-  IconButton _getSocialMediaButton(String imageUrl, String imagePath) {
-    return IconButton(
-      onPressed: () async => await launchUrl(Uri.parse(imageUrl)),
-      icon: SvgPicture.asset(imagePath, color: Colors.black, width: 35.0),
-    );
-  }
-
+class _BlogState extends State<Blog> {
   @override
   Widget build(BuildContext context) {
+    bool isWeb = MediaQuery.sizeOf(context).width > 800;
     return SafeArea(
       child: Scaffold(
-        endDrawer: Drawer(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              DrawerHeader(
-                padding: const EdgeInsets.only(bottom: 20.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(width: 2.0, color: Colors.black),
-                  ),
-                  child: Image.asset(
-                    'assets/images/image-circle.png',
-                    filterQuality: FilterQuality.high,
-                  ),
-                ),
-              ),
-              TabsMobile(text: 'Home', route: '/'),
-              SizedBox(height: 20.0),
-              TabsMobile(text: 'Works', route: '/works'),
-              const SizedBox(height: 20.0),
-              TabsMobile(text: 'Blog', route: '/blog'),
-              const SizedBox(height: 20.0),
-              TabsMobile(text: 'About', route: '/about'),
-              const SizedBox(height: 20.0),
-              TabsMobile(text: 'Contact', route: '/contact'),
-              const SizedBox(height: 40.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _getSocialMediaButton(
-                    'https://www.instagram.com/tomcruise',
-                    'assets/images/instagram.svg',
-                  ),
-                  _getSocialMediaButton(
-                    'https://www.twitter.com/tomcruise',
-                    'assets/images/twitter.svg',
-                  ),
-                  _getSocialMediaButton(
-                    'https://github.com/Aman-Singh-Rawat',
-                    'assets/images/github.svg',
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
+        endDrawer: DrawersMobile(),
         body: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
               SliverAppBar(
                 backgroundColor: Colors.white,
                 iconTheme: IconThemeData(size: 35.0, color: Colors.black),
-                expandedHeight: 400.0,
+                expandedHeight: isWeb ? 500.0 : 400.0,
 
                 flexibleSpace: FlexibleSpaceBar(
                   background: Image.asset(
@@ -97,16 +33,18 @@ class _BlogMobileState extends State<BlogMobile> {
                     filterQuality: FilterQuality.high,
                     fit: BoxFit.cover,
                   ),
-                  centerTitle: true,
+                  centerTitle: !isWeb,
                   title: Container(
                     decoration: BoxDecoration(
                       color: Colors.black,
                       borderRadius: BorderRadius.circular(3.0),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isWeb ? 7.0 : 4.0,
+                    ),
                     child: AbelCustom(
                       text: 'Welcome to my Blog',
-                      size: 24.0,
+                      size: isWeb ? 30.0 : 24.0,
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
@@ -125,12 +63,12 @@ class _BlogMobileState extends State<BlogMobile> {
                   itemCount: snpshot.data!.size,
                   itemBuilder: (context, index) {
                     final Map<String, dynamic> data =
-                        snpshot.data!.docs[index].data()
-                            as Map<String, dynamic>;
+                        snpshot.data!.docs[index].data();
 
                     return BlogPost(
                       title: data['title']?.toString() ?? 'No Title',
                       body: data['body']?.toString() ?? 'No Body',
+                      isWeb: isWeb,
                     );
                   },
                 );
@@ -155,8 +93,14 @@ class _BlogMobileState extends State<BlogMobile> {
 class BlogPost extends StatefulWidget {
   final title;
   final body;
+  final isWeb;
 
-  const BlogPost({super.key, required this.title, required this.body});
+  const BlogPost({
+    super.key,
+    required this.title,
+    required this.body,
+    @required this.isWeb,
+  });
 
   @override
   State<BlogPost> createState() => _BlogPostState();
@@ -168,7 +112,10 @@ class _BlogPostState extends State<BlogPost> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 30.0),
+      padding:
+          widget.isWeb
+              ? EdgeInsets.only(left: 70.0, right: 70.0, top: 40.0)
+              : EdgeInsets.only(left: 20.0, right: 20.0, top: 30.0),
       child: Container(
         padding: const EdgeInsets.all(10.0),
         decoration: BoxDecoration(

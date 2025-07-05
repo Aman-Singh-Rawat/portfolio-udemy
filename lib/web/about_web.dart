@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'components.dart';
+import '../components.dart';
 
 class AboutWeb extends StatefulWidget {
   const AboutWeb({super.key});
@@ -13,92 +13,19 @@ class AboutWeb extends StatefulWidget {
 }
 
 class _AboutWebState extends State<AboutWeb> {
-  tealContainer(String text) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.tealAccent, style: BorderStyle.solid),
-        borderRadius: BorderRadius.circular(5.0),
-      ),
-      padding: const EdgeInsets.all(7.0),
-      child: Text(text, style: GoogleFonts.openSans(fontSize: 15.0)),
-    );
-  }
-
-  urlLauncher(String imageUrl, String imagePath) {
-    return IconButton(
-      onPressed: () async {
-        await launchUrl(Uri.parse(imageUrl));
-      },
-      icon: SvgPicture.asset(
-        imagePath,
-        width: 35,
-        colorFilter: ColorFilter.mode(Colors.black, BlendMode.srcIn),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     var heightDevice = MediaQuery.sizeOf(context).height;
     var widthDevice = MediaQuery.sizeOf(context).width;
 
     return Scaffold(
-      drawer: Drawer(
-        backgroundColor: Colors.white,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: 72,
-              backgroundColor: Colors.tealAccent,
-              child: CircleAvatar(
-                radius: 70,
-                backgroundColor: Colors.white,
-                backgroundImage: AssetImage('assets/images/image-circle.png'),
-              ),
-            ),
-            const SizedBox(height: 15),
-            SansBold(text: 'Aman singh', size: 30),
-            const SizedBox(height: 15.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                urlLauncher(
-                  'https://www.instagram.com/tomcruise',
-                  'assets/images/instagram.svg',
-                ),
-                urlLauncher(
-                  'https://www.twitter.com/tomcruise',
-                  'assets/images/twitter.svg',
-                ),
-                urlLauncher(
-                  'https://github.com/Aman-Singh-Rawat',
-                  'assets/images/github.svg',
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+      drawer: DrawersWeb(),
       backgroundColor: Colors.white,
       appBar: AppBar(
         iconTheme: IconThemeData(size: 25, color: Colors.black),
         backgroundColor: Colors.white,
         elevation: 0.0,
-        title: Row(
-          children: [
-            Spacer(flex: 3),
-            TabsWeb(title: 'Home', route: '/'),
-            Spacer(),
-            TabsWeb(title: 'Works', route: '/works'),
-            Spacer(),
-            TabsWeb(title: 'Blog', route: '/blog'),
-            Spacer(),
-            TabsWeb(title: 'About', route: '/about'),
-            Spacer(),
-            TabsWeb(title: 'Contact', route: '/contact'),
-          ],
-        ),
+        title: TabsWebList(),
       ),
       body: ListView(
         children: [

@@ -1,4 +1,4 @@
-import 'package:aman_singh/web/components.dart';
+import 'package:aman_singh/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -15,67 +15,7 @@ class _WorksWebState extends State<WorksWeb> {
   Widget build(BuildContext context) {
     var widthDevice = MediaQuery.sizeOf(context).width;
     return Scaffold(
-      drawer: Drawer(
-        backgroundColor: Colors.white,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: 72.0,
-              backgroundColor: Colors.tealAccent,
-              child: CircleAvatar(
-                radius: 70.0,
-                backgroundColor: Colors.white,
-                backgroundImage: AssetImage('assets/images/works.png'),
-              ),
-            ),
-            const SizedBox(height: 15),
-            SansBold(text: 'Aman Singh', size: 30.0),
-            const SizedBox(height: 15),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                IconButton(
-                  onPressed: () async {
-                    await launchUrl(
-                      Uri.parse('https://www.instagram.com/tomcruise'),
-                    );
-                  },
-                  icon: SvgPicture.asset(
-                    'assets/instagram.svg',
-                    color: Colors.black,
-                    width: 35.0,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () async {
-                    await launchUrl(
-                      Uri.parse('https://www.twitter.com/tomcruise'),
-                    );
-                  },
-                  icon: SvgPicture.asset(
-                    'assets/twitter.svg',
-                    color: Colors.black,
-                    width: 35.0,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () async {
-                    await launchUrl(
-                      Uri.parse('https://github.com/Aman-Singh-Rawat'),
-                    );
-                  },
-                  icon: SvgPicture.asset(
-                    'assets/github.svg',
-                    color: Colors.black,
-                    width: 35.0,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+      drawer: DrawersWeb(),
       backgroundColor: Colors.white,
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -91,21 +31,7 @@ class _WorksWebState extends State<WorksWeb> {
                   filterQuality: FilterQuality.high,
                 ),
               ),
-              title: Row(
-                children: [
-                  Spacer(flex: 3),
-                  TabsWeb(title: 'Home', route: '/'),
-                  Spacer(),
-                  TabsWeb(title: 'Work', route: '/woks'),
-                  Spacer(),
-                  TabsWeb(title: 'Blog', route: '/blog'),
-                  Spacer(),
-                  TabsWeb(title: 'About', route: '/about'),
-                  Spacer(),
-                  TabsWeb(title: 'Contact', route: '/contact'),
-                  Spacer(),
-                ],
-              ),
+              title: TabsWebList(),
             ),
           ];
         },

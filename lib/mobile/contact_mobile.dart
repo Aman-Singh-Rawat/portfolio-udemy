@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:logger/web.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../web/components.dart';
+import '../components.dart';
 
 class ContactMobile extends StatefulWidget {
   const ContactMobile({super.key});
@@ -28,53 +28,7 @@ class _ContactMobileState extends State<ContactMobile> {
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.white,
 
-      endDrawer: Drawer(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            DrawerHeader(
-              padding: const EdgeInsets.only(bottom: 20.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(width: 2.0, color: Colors.black),
-                ),
-                child: Image.asset(
-                  'assets/images/image-circle.png',
-                  filterQuality: FilterQuality.high,
-                ),
-              ),
-            ),
-            TabsMobile(text: 'Home', route: '/'),
-            SizedBox(height: 20.0),
-            TabsMobile(text: 'Works', route: '/works'),
-            const SizedBox(height: 20.0),
-            TabsMobile(text: 'Blog', route: '/blog'),
-            const SizedBox(height: 20.0),
-            TabsMobile(text: 'About', route: '/about'),
-            const SizedBox(height: 20.0),
-            TabsMobile(text: 'Contact', route: '/contact'),
-            const SizedBox(height: 40.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _getSocialMediaButton(
-                  'https://www.instagram.com/tomcruise',
-                  'assets/images/instagram.svg',
-                ),
-                _getSocialMediaButton(
-                  'https://www.twitter.com/tomcruise',
-                  'assets/images/twitter.svg',
-                ),
-                _getSocialMediaButton(
-                  'https://github.com/Aman-Singh-Rawat',
-                  'assets/images/github.svg',
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+      endDrawer: DrawersMobile(),
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
@@ -117,7 +71,6 @@ class _ContactMobileState extends State<ContactMobile> {
                   containerWidth: widthDevice / 1.4,
                   hintText: 'Please type first name',
                   controller: _lastNameController,
-                
                 ),
                 TextForm(
                   text: 'Phone number',
@@ -131,7 +84,7 @@ class _ContactMobileState extends State<ContactMobile> {
                   hintText: 'Please type email address',
                   controller: _emailNameController,
                 ),
-            
+
                 TextForm(
                   text: 'Message',
                   containerWidth: widthDevice / 1.4,
@@ -139,22 +92,26 @@ class _ContactMobileState extends State<ContactMobile> {
                   maxLine: 10,
                   controller: _messageController,
                 ),
-            
+
                 MaterialButton(
                   onPressed: () async {
                     logger.d(_firstNameController.text.toString());
                     final addData = new AddDataFirestore();
-            
+
                     if (formKey.currentState!.validate()) {
-                      await addData.addResponse(
+                      bool flag = await addData.addResponse(
                         _firstNameController.text,
                         _lastNameController.text,
                         _emailNameController.text,
                         _phoneNameController.text,
                         _messageController.text,
                       );
-                      formKey.currentState!.reset();
-                      dialogError(context);
+                      if (flag) {
+                        formKey.currentState!.reset();
+                        dialogError(context, "Message sent successfully");
+                      } else {
+                        dialogError(context, "Message failed to sent");
+                      }
                     }
                   },
                   shape: RoundedRectangleBorder(
@@ -170,13 +127,6 @@ class _ContactMobileState extends State<ContactMobile> {
           ),
         ),
       ),
-    );
-  }
-
-  IconButton _getSocialMediaButton(String imageUrl, String imagePath) {
-    return IconButton(
-      onPressed: () async => await launchUrl(Uri.parse(imageUrl)),
-      icon: SvgPicture.asset(imagePath, color: Colors.black, width: 35.0),
     );
   }
 }
